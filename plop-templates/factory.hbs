@@ -1,0 +1,8 @@
+import { {{pascalCase action}}UseCase } from './{{kebabCase action}}.use-case';
+import { {{pascalCase entity}}RepositoryInterface } from '../../repositories/{{kebabCase entity}}-repository.interface';
+
+export class {{pascalCase action}}Factory {
+  static create({{camelCase entity}}Repository: {{pascalCase entity}}RepositoryInterface): {{pascalCase action}}UseCase {
+    return new {{pascalCase action}}UseCase({{camelCase entity}}Repository);
+  }
+}

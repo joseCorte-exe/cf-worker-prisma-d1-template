@@ -1,0 +1,25 @@
+import { createMiddleware } from 'hono/factory';
+{{#if includeDTO}}
+import { {{pascalCase action}}DTO } from '../dtos/{{kebabCase action}}.dto';
+{{/if}}
+import { {{pascalCase action}}UseCase } from './{{kebabCase action}}.use-case';
+
+export const {{camelCase action}}Controller = createMiddleware(async (c) => {
+  // TODO: Get dependencies (use case instance)
+  const {{camelCase action}}UseCase = new {{pascalCase action}}UseCase(/* TODO: Add dependencies */);
+
+  try {
+    {{#if includeDTO}}
+    const input: {{pascalCase action}}DTO = await c.req.json();
+    await {{camelCase action}}UseCase.execute(input);
+    {{else}}
+    // TODO: Extract input from request
+    await {{camelCase action}}UseCase.execute();
+    {{/if}}
+
+    return c.json({ success: true }, 200);
+  } catch (error) {
+    // Error will be handled by error middleware
+    throw error;
+  }
+});

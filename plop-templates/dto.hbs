@@ -1,0 +1,18 @@
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+
+export class {{pascalCase action}}DTO {
+  // TODO: Add validation decorators and properties based on your needs
+  
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  // Example properties - customize based on your use case
+  // @IsString()
+  // @IsNotEmpty()
+  // name: string;
+
+  // @IsOptional()
+  // @IsString()
+  // description?: string;
+}

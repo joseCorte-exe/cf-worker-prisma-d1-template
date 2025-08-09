@@ -1,0 +1,43 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { {{pascalCase action}}UseCase } from './{{kebabCase action}}.use-case';
+import { {{pascalCase entity}}RepositoryInterface } from '../../repositories/{{kebabCase entity}}-repository.interface';
+{{#if includeDTO}}
+import { {{pascalCase action}}DTO } from '../dtos/{{kebabCase action}}.dto';
+{{/if}}
+
+describe('{{pascalCase action}}UseCase', () => {
+  let {{camelCase action}}UseCase: {{pascalCase action}}UseCase;
+  let {{camelCase entity}}Repository: {{pascalCase entity}}RepositoryInterface;
+
+  beforeEach(() => {
+    {{camelCase entity}}Repository = {
+      create: vi.fn(),
+      findById: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      findAll: vi.fn(),
+    };
+
+    {{camelCase action}}UseCase = new {{pascalCase action}}UseCase({{camelCase entity}}Repository);
+  });
+
+  describe('execute', () => {
+    it('should execute successfully', async () => {
+      // TODO: Implement test cases
+      {{#if includeDTO}}
+      const input: {{pascalCase action}}DTO = {
+        id: 'test-id',
+        // TODO: Add test data
+      };
+
+      await expect({{camelCase action}}UseCase.execute(input)).rejects.toThrow('Method not implemented');
+      {{else}}
+      await expect({{camelCase action}}UseCase.execute()).rejects.toThrow('Method not implemented');
+      {{/if}}
+    });
+
+    // TODO: Add more test cases
+    // it('should handle error case', async () => {});
+    // it('should validate input', async () => {});
+  });
+});

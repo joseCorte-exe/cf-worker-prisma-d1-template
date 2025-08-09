@@ -1,0 +1,14 @@
+export interface {{pascalCase entity}}RepositoryInterface {
+  create({{camelCase entity}}: {{pascalCase entity}}): Promise<void>;
+  findById(id: string): Promise<{{pascalCase entity}} | null>;
+  update(id: string, data: Partial<{{pascalCase entity}}>): Promise<void>;
+  delete(id: string): Promise<void>;
+  findAll(): Promise<{{pascalCase entity}}[]>;
+}
+
+export type {{pascalCase entity}} = {
+  id: string;
+  // TODO: Add entity properties
+  createdAt: Date;
+  updatedAt: Date;
+};

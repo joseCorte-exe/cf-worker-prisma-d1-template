@@ -1,0 +1,15 @@
+{{#if includeDTO}}
+import { {{pascalCase action}}DTO } from '../dtos/{{kebabCase action}}.dto';
+{{/if}}
+import { {{pascalCase entity}}RepositoryInterface } from '../../repositories/{{kebabCase entity}}-repository.interface';
+
+export class {{pascalCase action}}UseCase {
+  constructor(
+    private readonly {{camelCase entity}}Repository: {{pascalCase entity}}RepositoryInterface,
+  ) {}
+
+  async execute({{#if includeDTO}}input: {{pascalCase action}}DTO{{else}}/* TODO: Add input parameters */{{/if}}): Promise<{{#if includeDTO}}void{{else}}/* TODO: Define return type */{{/if}}> {
+    // TODO: Implement {{kebabCase action}} logic
+    throw new Error('Method not implemented');
+  }
+}

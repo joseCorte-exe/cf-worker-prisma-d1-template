@@ -1,0 +1,29 @@
+import { prisma } from '../../../database/prisma';
+import { {{pascalCase entity}}, {{pascalCase entity}}RepositoryInterface } from './{{kebabCase entity}}-repository.interface';
+
+export class Prisma{{pascalCase entity}}Repository implements {{pascalCase entity}}RepositoryInterface {
+  async create({{camelCase entity}}: {{pascalCase entity}}): Promise<void> {
+    // TODO: Implement create method
+    throw new Error('Method not implemented');
+  }
+
+  async findById(id: string): Promise<{{pascalCase entity}} | null> {
+    // TODO: Implement findById method
+    throw new Error('Method not implemented');
+  }
+
+  async update(id: string, data: Partial<{{pascalCase entity}}>): Promise<void> {
+    // TODO: Implement update method
+    throw new Error('Method not implemented');
+  }
+
+  async delete(id: string): Promise<void> {
+    // TODO: Implement delete method
+    throw new Error('Method not implemented');
+  }
+
+  async findAll(): Promise<{{pascalCase entity}}[]> {
+    // TODO: Implement findAll method
+    throw new Error('Method not implemented');
+  }
+}
