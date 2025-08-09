@@ -1,0 +1,22 @@
+{
+  "name": "cf-worker-prisma-d1-template",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "migrate": "dotenv -e .dev.vars -- npx prisma migrate dev",
+    "generate": "dotenv -e .dev.vars -- npx prisma generate --no-engine",
+    "studio": "dotenv -e .dev.vars -- npx prisma studio"
+  },
+  "dependencies": {
+    "@prisma/adapter-d1": "^6.13.0",
+    "@prisma/client": "^6.13.0",
+    "hono": "^4.9.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^10.0.0",
+    "prisma": "^6.13.0",
+    "wrangler": "^4.4.0"
+  }
+}
