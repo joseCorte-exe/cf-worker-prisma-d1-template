@@ -12,17 +12,44 @@ src/
 ├── entities/            # Entidades de domínio
 │   └── {domain}/        # Aggregates por domínio
 ├── errors/              # Sistema de erros tipados
-├── repositories/        # Contratos e implementações de persistência
-├── services/           # Serviços de domínio
-├── types/              # Definições de tipos TypeScript
-└── use-cases/          # Casos de uso (aplicação)
-    ├── {action-name}/   # Casos de uso organizados por ação
-    └── dtos/           # Data Transfer Objects
+├── middlewares/         # Middlewares da aplicação
+├── modules/             # Módulos organizados por domínio
+│   └── {module-name}/   # Ex: associate, workflow, user
+│       ├── {module}.module.ts     # Configuração do módulo
+│       ├── use-cases/             # Casos de uso do módulo
+│       │   ├── {action-name}/     # Casos de uso específicos
+│       │   │   ├── {action-name}.use-case.ts
+│       │   │   ├── {action-name}.controller.ts
+│       │   │   └── {action-name}.spec.ts
+│       │   └── dtos/              # DTOs do módulo
+│       │       └── {action-name}.dto.ts
+│       ├── repositories/          # Repositories do módulo
+│       │   ├── {entity}-repository.interface.ts
+│       │   └── {storage}-{entity}.repository.ts
+│       └── services/              # Serviços específicos do módulo
+├── repositories/        # Repositories globais/compartilhados
+├── services/           # Serviços globais
+└── types/              # Definições de tipos TypeScript globais
 ```
 
 ## Padrões Arquiteturais Implementados
 
-### 1. Clean Architecture + DDD
+### 1. Modular Architecture + Clean Architecture + DDD
+
+#### Module Organization (`modules/`)
+- **Domain Modules**: Cada módulo representa um domínio/contexto delimitado
+- **Module Configuration**: Arquivo `{module}.module.ts` centraliza configurações do módulo
+- **Encapsulamento**: Use-cases, repositories e services específicos ficam dentro do módulo
+- **Separation of Concerns**: Separação clara entre módulos e funcionalidades globais
+
+```typescript
+// modules/{module}/{module}.module.ts
+export class {Module}Module {
+  // Configuração de dependências
+  // Providers específicos do módulo
+  // Exports para outros módulos
+}
+```
 
 #### Domain Layer (`entities/`)
 - **Entity Base**: Classe abstrata com identificação única
@@ -43,13 +70,14 @@ export class {Entity} extends Entity {
 }
 ```
 
-#### Application Layer (`use-cases/`)
-- **Use Cases**: Lógica de aplicação isolada e testável
-- **DTOs**: Contratos de entrada/saída bem definidos
+#### Application Layer (`modules/{module}/use-cases/`)
+- **Use Cases**: Lógica de aplicação isolada e testável por módulo
+- **DTOs**: Contratos de entrada/saída específicos do módulo
 - **Dependency Injection**: Inversão de dependências via construtor
+- **Module Scoped**: Cada módulo tem seus próprios use-cases
 
 ```typescript
-// use-cases/{action-name}/{action-name}.use-case.ts
+// modules/{module}/use-cases/{action-name}/{action-name}.use-case.ts
 export class {Action}UseCase {
   constructor(
     private readonly {entity}Repository: {Entity}RepositoryInterface,
@@ -58,6 +86,8 @@ export class {Action}UseCase {
 ```
 
 ### 2. Repository Pattern
+- **Module Repositories**: Repositories específicos dentro de cada módulo
+- **Global Repositories**: Repositories compartilhados entre módulos
 - **Interfaces**: Contratos abstratos para persistência
 - **Implementações**: Acoplamento baixo com infraestrutura específica
 - **Type Safety**: Tipagem forte nos contratos de dados
@@ -108,24 +138,34 @@ export enum {Domain}States {
 - **camelCase**: Para métodos e variáveis
 - **SCREAMING_SNAKE_CASE**: Para enums e constantes
 
-### Estrutura de Use Cases
+### Estrutura de Módulos
 ```
-use-cases/
-├── {action-name}/
-│   ├── {action-name}.use-case.ts
-│   ├── {action-name}.controller.ts
-│   ├── {action-name}.factory.ts
-│   └── {action-name}.spec.ts
-└── dtos/
-    └── {action-name}.dto.ts
+modules/
+├── {module-name}/              # Ex: associate, user, workflow
+│   ├── {module}.module.ts      # Configuração do módulo
+│   ├── use-cases/
+│   │   ├── {action-name}/
+│   │   │   ├── {action-name}.use-case.ts
+│   │   │   ├── {action-name}.controller.ts
+│   │   │   ├── {action-name}.factory.ts
+│   │   │   └── {action-name}.spec.ts
+│   │   └── dtos/
+│   │       └── {action-name}.dto.ts
+│   ├── repositories/
+│   │   ├── {entity}-repository.interface.ts
+│   │   └── {storage}-{entity}.repository.ts
+│   └── services/
+│       └── {domain}-{service}.service.ts
 ```
 
 ### Padrões de Naming
+- **Modules**: `{Domain}Module` (ex: `AssociateModule`, `UserModule`)
 - **Use Cases**: `{Verb}{Noun}UseCase` (ex: `CreateUserUseCase`)
 - **Controllers**: `{Verb}{Noun}Controller`
 - **Factories**: `{Entity}Factory` com métodos estáticos
 - **Repositories**: `{Entity}RepositoryInterface` e `{Storage}{Entity}Repository`
 - **Data Transfer Objects**: `{Action}{Entity}DTO`
+- **Services**: `{Domain}{Purpose}Service` (ex: `UserAuthenticationService`)
 
 ## Estratégias de Testabilidade
 
@@ -181,10 +221,11 @@ use-cases/
 ## Padrões de Evolução
 
 ### Extensibilidade
+- **Modular Design**: Novos domínios podem ser adicionados como módulos independentes
 - **Factory Pattern**: Facilita criação de novos tipos de entidades
 - **Value Object Pattern**: Permite novos comportamentos sem quebrar existentes
 - **Repository Pattern**: Suporta múltiplos tipos de storage
-- **Use Case Pattern**: Novos casos de uso independentes
+- **Use Case Pattern**: Novos casos de uso independentes por módulo
 
 ### Maintainability
 - **Type Safety**: Reduz bugs em tempo de execução
@@ -194,12 +235,14 @@ use-cases/
 
 ## Resumo dos Benefícios
 
-1. **Testabilidade**: Arquitetura facilita testes unitários e de integração
-2. **Manutenibilidade**: Código limpo e bem estruturado
-3. **Extensibilidade**: Fácil adição de novos recursos
-4. **Type Safety**: Redução significativa de bugs
-5. **Performance**: Arquitetura otimizada para runtime escolhido
-6. **Developer Experience**: Tooling moderno e produtivo
+1. **Modularidade**: Separação clara de domínios e responsabilidades por módulo
+2. **Testabilidade**: Arquitetura facilita testes unitários e de integração
+3. **Manutenibilidade**: Código limpo e bem estruturado
+4. **Extensibilidade**: Fácil adição de novos módulos e recursos
+5. **Scalabilidade**: Módulos podem ser desenvolvidos e deployados independentemente
+6. **Type Safety**: Redução significativa de bugs
+7. **Performance**: Arquitetura otimizada para runtime escolhido
+8. **Developer Experience**: Tooling moderno e produtivo
 
 ---
 
