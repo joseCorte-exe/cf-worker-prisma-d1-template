@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { {{pascalCase action}}UseCase } from './{{kebabCase action}}.use-case';
 import { {{pascalCase entity}}RepositoryInterface } from '../../repositories/{{kebabCase entity}}-repository.interface';
 {{#if includeDTO}}
-import { {{pascalCase action}}DTO } from '../dtos/{{kebabCase action}}.dto';
+import { Input{{pascalCase action}}DTO } from '../dtos/{{kebabCase action}}.dto';
 {{/if}}
 
 describe('{{pascalCase action}}UseCase', () => {
@@ -25,7 +25,7 @@ describe('{{pascalCase action}}UseCase', () => {
     it('should execute successfully', async () => {
       // TODO: Implement test cases
       {{#if includeDTO}}
-      const input: {{pascalCase action}}DTO = {
+      const input: Input{{pascalCase action}}DTO = {
         id: 'test-id',
         // TODO: Add test data
       };

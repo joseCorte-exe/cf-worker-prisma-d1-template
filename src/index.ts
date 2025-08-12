@@ -3,11 +3,8 @@ import { Hono } from 'hono'
 import { PrismaClient } from '../generated/prisma'
 import { initializePrisma } from './database/prisma'
 
-type Bindings = {
-  DB: D1Database
-}
 
-const app = new Hono<{ Bindings: Bindings }>()
+const app = new Hono<HonoType>()
 
 app.use('*', async (c, next) => {
   const adapter = new PrismaD1(c.env.DB)

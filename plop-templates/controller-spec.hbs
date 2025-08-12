@@ -1,0 +1,76 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+{{#if includeDTO}}
+import { Input{{pascalCase action}}DTO } from "../dtos/{{kebabCase action}}.dto";
+{{/if}}
+import { {{pascalCase action}}Controller } from "./{{kebabCase action}}.controller";
+import { {{pascalCase action}}UseCase } from "./{{kebabCase action}}.use-case";
+
+const mockUseCase = {
+  execute: vi.fn()
+} as unknown as {{pascalCase action}}UseCase;
+
+const mockContext = {
+  req: {
+    json: vi.fn()
+  },
+  newResponse: vi.fn()
+} as any;
+
+describe('{{pascalCase action}} controller', () => {
+  let sut: {{pascalCase action}}Controller;
+
+  beforeEach(() => {
+    sut = new {{pascalCase action}}Controller(mockUseCase);
+    vi.clearAllMocks();
+  });
+
+  describe('handle', () => {
+    it('Should {{lowerCase action}} with success', async () => {
+      {{#if includeDTO}}
+      const requestBody: Input{{pascalCase action}}DTO = {
+        // TODO: Add DTO properties
+      };
+      {{else}}
+      const requestBody = {
+        // TODO: Add request body properties
+      };
+      {{/if}}
+
+      mockContext.req.json.mockResolvedValue(requestBody);
+      mockUseCase.execute.mockResolvedValue({ success: true });
+
+      await sut.handle(mockContext);
+
+      expect(mockUseCase.execute).toHaveBeenCalledWith(requestBody);
+      expect(mockContext.newResponse).toHaveBeenCalledWith(
+        { success: true },
+        201
+      );
+
+      expect(mockContext.req.json).toHaveBeenCalledTimes(1);
+      expect(mockUseCase.execute).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should throw use case input error', async () => {
+      {{#if includeDTO}}
+      const requestBody: Input{{pascalCase action}}DTO = {
+        // TODO: Add DTO properties
+      };
+      {{else}}
+      const requestBody = {
+        // TODO: Add request body properties  
+      };
+      {{/if}}
+      const error = new Error('Use case error');
+
+      mockContext.req.json.mockResolvedValue(requestBody);
+      mockUseCase.execute.mockRejectedValue(error);
+
+      await expect(sut.handle(mockContext)).rejects.toThrow('Use case error');
+
+      expect(mockContext.req.json).toHaveBeenCalledTimes(1);
+      expect(mockUseCase.execute).toHaveBeenCalledWith(requestBody);
+      expect(mockContext.newResponse).not.toHaveBeenCalled();
+    })
+  })
+});
