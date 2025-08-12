@@ -14,7 +14,7 @@ app.use('*', async (c, next) => {
 })
 
 app.get('/', (c) => {
-  return c.text('Hello Assembleo Core MS!')
+  return c.text('Hello Hono!')
 })
 
 export default app
